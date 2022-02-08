@@ -250,9 +250,13 @@ contract dYdXLiquidator {
         curvePoolSUSD.exchange_underlying(
             1, // usdc
             3, // sUSD
-            usdcEstimate, // usdc input
+            usdcEstimate, // usdc input (in YT video, this line of code is "IERC20(sUSDTokenAddress).balanceOf(address(this))")
             1); // min sUSD, generally not advisible to make a trade with a min amount out of 1, but its fine here I think because the overall risk of getting rekt is low
         
+        console.log("\nCurve swap done");
+        
+        uint sUSDBalanceAfterCurveSwap = IERC20(sUSDTokenAddress).balanceOf(address(this));
+        console.log("sUSD balance after Curve swap:", sUSDBalanceAfterCurveSwap)
         // Liquidate the loans
         for (uint256 i = 0; i < sUSDAddresses.length; i++) {
             sUSDLoansAddress.liquidateUnclosedLoan(sUSDAddresses[i], sUSDLoanIDs[i]);
