@@ -221,9 +221,13 @@ contract dYdXLiquidator {
             uint256,
             uint256
         ));
+        
+        // console.log("\n--------------------Executing----------------");
+        // console.log("WETH at start:", wethEstimate);
+        // console.log("USDC estimate:", usdcEstimate);
 
         // Swap WETH for USDC on uniswap v3
-        uniswapRouter.exactOutputSingle(
+        uint amountIn = uniswapRouter.exactOutputSingle(
             ISwapRouter.ExactOutputSingleParams(
                 address(WETH),        // address tokenIn;
                 usdcTokenAddress,     // address tokenOut;
@@ -235,6 +239,12 @@ contract dYdXLiquidator {
                 0                     // uint160 sqrtPriceLimitX96;
             )
         );
+        
+        uint usdcBalance = IERC20(usdcTokenAddress).balanceOf(address(this));
+        
+        console.log("\nUniswap swap done!");
+        console.log("Received this amount of USDC:", usdcBalance);
+        console.log("Swapped with this amount of ETH:", amountIn);
 
         // Swap USDC for sUSD on Curve
         curvePoolSUSD.exchange_underlying(
